@@ -213,7 +213,6 @@ const form = ref({})
 const imagenFile = ref(null)
 const imagenPreview = ref('')
 const imagenQuitada = ref(false)
-const archivosNuevos = ref([])
 const pathsAQuitar = ref([])
 const nuevoLink = ref('')
 const nuevoLabel = ref('')
@@ -233,7 +232,6 @@ const abrir = () => {
   imagenFile.value = null
   imagenPreview.value = props.idea.imagen_url || ''
   imagenQuitada.value = false
-  archivosNuevos.value = []
   pathsAQuitar.value = []
   nuevoLink.value = ''
   nuevoLabel.value = ''
@@ -266,20 +264,14 @@ const agregarLink = () => {
 const onArchivosChange = (event) => {
   const files = Array.from(event.target.files || [])
   for (const file of files) {
-    archivosNuevos.value.push(file)
-    form.value.assets.push({ tipo: 'file', url: '', path: '', label: file.name, pendiente: true })
+    form.value.assets.push({ tipo: 'file', url: '', path: '', label: file.name, pendiente: true, file })
   }
   event.target.value = ''
 }
 
 const quitarAsset = (index) => {
   const [asset] = form.value.assets.splice(index, 1)
-  if (asset.tipo === 'file' && asset.pendiente) {
-    const i = archivosNuevos.value.findIndex((f) => f.name === asset.label)
-    if (i !== -1) archivosNuevos.value.splice(i, 1)
-    return
-  }
-  if (asset.tipo === 'file' && asset.path) pathsAQuitar.value.push(asset.path)
+  if (asset.tipo === 'file' && !asset.pendiente && asset.path) pathsAQuitar.value.push(asset.path)
 }
 
 const onSubmit = async () => {
@@ -315,9 +307,8 @@ const onSubmit = async () => {
         assets.push(asset)
         continue
       }
-      const file = archivosNuevos.value.find((f) => f.name === asset.label)
-      if (!file) continue
-      const { publicUrl, path } = await uploadFile(file, props.idea.slug)
+      if (!asset.file) continue
+      const { publicUrl, path } = await uploadFile(asset.file, props.idea.slug)
       assets.push({ tipo: 'file', url: publicUrl, path, label: asset.label })
     }
     patch.assets = assets
