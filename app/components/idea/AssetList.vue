@@ -4,7 +4,7 @@
     <ul class="flex flex-col gap-2">
       <li v-for="(asset, i) in assets" :key="`${asset.url}-${i}`">
         <a
-          :href="asset.url"
+          :href="href(asset.url)"
           target="_blank"
           rel="noopener noreferrer"
           class="group flex items-center gap-2.5 border border-stone-200 hover:border-stone-300 rounded-xl transition-colors px-3 py-2.5"
@@ -27,6 +27,16 @@
 const props = defineProps({
   assets: { type: Array, default: () => [] },
 })
+
+const PROTOCOLOS = ['http:', 'https:', 'mailto:']
+
+const href = (url) => {
+  try {
+    return PROTOCOLOS.includes(new URL(url).protocol) ? url : '#'
+  } catch {
+    return '#'
+  }
+}
 
 const etiqueta = (asset) => {
   if (asset.label) return asset.label
