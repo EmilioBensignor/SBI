@@ -54,7 +54,7 @@ app/
     useIdeas.js                 — única puerta a ideas_tematicas
     useStorage.js               — única puerta al bucket `ideas`
   components/
-    ui/EmptyState.vue
+    EmptyState.vue              — en la raíz a propósito: sin carpeta, sin prefijo
     idea/Card.vue               — card de la grilla (presentacional)
     idea/AssetList.vue          — links + archivos, oculto si no hay
     idea/Evaluacion.vue         — puntaje + 3 textos, oculta los vacíos
@@ -72,7 +72,7 @@ supabase/schema.sql             — migración idempotente (ya aplicada en Regis
 
 **Creación en dos fases.** Crear una temática pide solo `tematica` + `fecha` — en el paso 1 de la dinámica no hay nada más que anotar. El resto se completa después desde la ficha.
 
-**Auto-import sin prefijo de carpeta** (`pathPrefix: false`): `components/idea/Card.vue` se usa como `<IdeaCard>`, `components/ui/EmptyState.vue` como `<EmptyState>`.
+**Auto-import con prefijo de carpeta** (`pathPrefix: true`): `components/idea/Card.vue` se usa como `<IdeaCard>`. Por eso `EmptyState.vue` vive en la raíz de `components/` y no en una subcarpeta: ahí no hay prefijo que anteponer y queda `<EmptyState>`. Con `pathPrefix: false` los nombres pierden la carpeta (`<Card>`), que no es lo que usan los templates.
 
 ## Datos
 

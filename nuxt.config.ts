@@ -21,7 +21,7 @@ export default defineNuxtConfig({
   },
 
   css: ['~/assets/css/main.css'],
-  components: [{ path: '~/components', pathPrefix: false }],
+  components: [{ path: '~~/app/components', pathPrefix: true }],
   imports: { dirs: ['composables/**'] },
 
   ui: { colorMode: false },
