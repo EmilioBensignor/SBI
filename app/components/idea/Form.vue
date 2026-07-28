@@ -2,7 +2,7 @@
   <div>
     <button
       type="button"
-      class="flex items-center gap-1.5 rounded-full text-sm text-stone-500 hover:text-stone-900 transition-colors px-2 py-1"
+      class="flex items-center gap-1.5 rounded-full text-sm md:text-base text-stone-500 hover:text-stone-900 transition-colors px-2 py-1"
       @click="abrir"
     >
       <UIcon name="i-lucide-pencil" class="size-4" />
@@ -13,7 +13,7 @@
       <template #body>
         <form class="flex flex-col gap-6" @submit.prevent="onSubmit">
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Temática</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Temática</label>
             <input
               v-model="form.tematica"
               type="text"
@@ -23,7 +23,7 @@
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Fecha</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Fecha</label>
             <input
               v-model="form.fecha"
               type="date"
@@ -33,7 +33,7 @@
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Título de la idea</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Título de la idea</label>
             <input
               v-model="form.titulo"
               type="text"
@@ -43,7 +43,7 @@
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Imagen</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Imagen</label>
             <div v-if="imagenPreview" class="relative overflow-hidden bg-stone-100 rounded-xl">
               <img :src="imagenPreview" alt="" class="w-full aspect-4/3 object-cover">
               <button
@@ -58,23 +58,23 @@
             <input
               type="file"
               accept="image/*"
-              class="text-sm text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
+              class="text-sm md:text-base text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm md:text-base file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
               @change="onImagenChange"
             >
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Desarrollo</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Desarrollo</label>
             <textarea
               v-model="form.desarrollo"
               rows="8"
               placeholder="El desarrollo profundo de la idea…"
-              class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm text-stone-900 placeholder:text-stone-300 leading-relaxed outline-none transition-colors px-3 py-2.5"
+              class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm md:text-base text-stone-900 placeholder:text-stone-300 leading-relaxed outline-none transition-colors px-3 py-2.5"
             />
           </div>
 
           <div class="flex flex-col gap-3">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Assets extra</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Assets extra</label>
 
             <ul v-if="form.assets.length" class="flex flex-col gap-2">
               <li
@@ -86,7 +86,7 @@
                   :name="asset.tipo === 'file' ? 'i-lucide-paperclip' : 'i-lucide-link'"
                   class="size-4 shrink-0 text-stone-400"
                 />
-                <span class="flex-1 text-sm text-stone-700 truncate">{{ asset.label || asset.url }}</span>
+                <span class="flex-1 text-sm md:text-base text-stone-700 truncate">{{ asset.label || asset.url }}</span>
                 <button
                   type="button"
                   class="size-7 flex items-center justify-center text-stone-400 hover:text-red-600 transition-colors"
@@ -104,13 +104,13 @@
                   v-model="nuevoLink"
                   type="url"
                   placeholder="https://tiktok.com/…"
-                  class="w-full flex-1 bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
+                  class="w-full flex-1 bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm md:text-base text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
                 >
                 <input
                   v-model="nuevoLabel"
                   type="text"
                   placeholder="Etiqueta"
-                  class="w-28 bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
+                  class="w-28 bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm md:text-base text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
                 >
                 <button
                   type="button"
@@ -126,7 +126,7 @@
               <input
                 type="file"
                 multiple
-                class="text-sm text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
+                class="text-sm md:text-base text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm md:text-base file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
                 @change="onArchivosChange"
               >
             </div>
@@ -134,7 +134,7 @@
 
           <div class="flex flex-col gap-5 border-t border-stone-100 pt-5">
             <div class="flex flex-col gap-1.5">
-              <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Puntaje</label>
+              <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Puntaje</label>
               <input
                 v-model.number="form.puntaje"
                 type="number"
@@ -146,18 +146,18 @@
             </div>
 
             <div v-for="campo in CAMPOS_EVAL" :key="campo.key" class="flex flex-col gap-1.5">
-              <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">{{ campo.label }}</label>
+              <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">{{ campo.label }}</label>
               <textarea
                 v-model="form[campo.key]"
                 rows="3"
-                class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm text-stone-900 leading-relaxed outline-none transition-colors px-3 py-2.5"
+                class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm md:text-base text-stone-900 leading-relaxed outline-none transition-colors px-3 py-2.5"
               />
             </div>
           </div>
 
           <p
             v-if="errorMessage"
-            class="bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 px-3 py-2"
+            class="bg-red-50 border border-red-200 rounded-lg text-sm md:text-base text-red-700 px-3 py-2"
             role="alert"
           >
             {{ errorMessage }}
@@ -166,7 +166,7 @@
           <div class="flex items-center justify-end gap-2 border-t border-stone-100 pt-5">
             <button
               type="button"
-              class="rounded-full text-sm text-stone-500 hover:text-stone-900 transition-colors px-3 py-2"
+              class="rounded-full text-sm md:text-base text-stone-500 hover:text-stone-900 transition-colors px-3 py-2"
               :disabled="loading"
               @click="open = false"
             >
@@ -175,7 +175,7 @@
             <button
               type="submit"
               :disabled="loading"
-              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 disabled:bg-stone-200 rounded-full text-sm text-white disabled:text-stone-400 font-semibold disabled:cursor-not-allowed transition-all px-4 py-2"
+              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 disabled:bg-stone-200 rounded-full text-sm md:text-base text-white disabled:text-stone-400 font-semibold disabled:cursor-not-allowed transition-all px-4 py-2"
             >
               <UIcon
                 :name="loading ? 'i-lucide-loader-circle' : 'i-lucide-check'"

@@ -18,6 +18,7 @@ export default defineNuxtConfig({
         { name: 'description', content: 'El registro de las ideas creativas de Motix' },
       ],
     },
+    pageTransition: { name: 'page', mode: 'out-in' },
   },
 
   css: ['~/assets/css/main.css'],

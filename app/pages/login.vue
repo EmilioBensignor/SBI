@@ -3,12 +3,12 @@
     <div class="flex flex-col items-center gap-2 text-center">
       <div class="size-14 flex items-center justify-center bg-primary-100 rounded-2xl text-3xl">💡</div>
       <h1 class="text-2xl text-stone-900 font-semibold tracking-tight">Stupid Big Ideas</h1>
-      <p class="text-sm text-stone-500">Entrá para anotar ideas</p>
+      <p class="text-sm md:text-base text-stone-500">Entrá para anotar ideas</p>
     </div>
 
     <form class="w-full flex flex-col gap-5" @submit.prevent="onSubmit">
       <div class="flex flex-col gap-1.5">
-        <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Email</label>
+        <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Email</label>
         <input
           v-model="email"
           type="email"
@@ -21,7 +21,7 @@
       </div>
 
       <div class="flex flex-col gap-1.5">
-        <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Contraseña</label>
+        <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Contraseña</label>
         <div class="flex items-center border-b-2 border-stone-200 focus-within:border-primary-500 transition-colors">
           <input
             v-model="password"
@@ -45,7 +45,7 @@
 
       <p
         v-if="errorMessage"
-        class="bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 px-3 py-2"
+        class="bg-red-50 border border-red-200 rounded-lg text-sm md:text-base text-red-700 px-3 py-2"
         role="alert"
       >
         {{ errorMessage }}
@@ -56,7 +56,7 @@
           type="submit"
           :disabled="!email || !password || loading"
           :class="[
-            'flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 disabled:bg-stone-200 rounded-full text-sm text-white disabled:text-stone-400 font-semibold disabled:cursor-not-allowed transition-all px-5 py-2.5',
+            'flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 disabled:bg-stone-200 rounded-full text-sm md:text-base text-white disabled:text-stone-400 font-semibold disabled:cursor-not-allowed transition-all px-5 py-2.5',
             loading ? 'opacity-70' : ''
           ]"
         >
@@ -68,7 +68,7 @@
         </button>
       </div>
 
-      <NuxtLink to="/" class="text-sm text-stone-400 hover:text-stone-700 text-center transition-colors">
+      <NuxtLink to="/" class="text-sm md:text-base text-stone-400 hover:text-stone-700 text-center transition-colors">
         Volver al archivo
       </NuxtLink>
     </form>

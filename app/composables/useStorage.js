@@ -31,5 +31,10 @@ export const useStorage = () => {
     if (error) throw error
   }
 
-  return { uploadFile, removeFiles }
+  const thumb = (url, width) => {
+    if (!url || !url.includes('/storage/v1/object/public/')) return url
+    return `${url.replace('/object/public/', '/render/image/public/')}?width=${width}&resize=contain&quality=75`
+  }
+
+  return { uploadFile, removeFiles, thumb }
 }

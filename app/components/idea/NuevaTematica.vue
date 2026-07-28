@@ -2,7 +2,7 @@
   <div>
     <button
       type="button"
-      class="flex items-center gap-1.5 bg-stone-900 hover:bg-stone-700 rounded-full text-sm text-white font-medium transition-colors px-4 py-2"
+      class="flex items-center gap-1.5 bg-stone-900 hover:bg-stone-700 rounded-full text-sm md:text-base text-white font-medium transition-colors px-4 py-2"
       @click="open = true"
     >
       <UIcon name="i-lucide-plus" class="size-4" />
@@ -13,7 +13,7 @@
       <template #body>
         <form class="flex flex-col gap-5" @submit.prevent="onSubmit">
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Temática</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Temática</label>
             <input
               v-model="tematica"
               type="text"
@@ -26,7 +26,7 @@
           </div>
 
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs text-stone-500 font-medium tracking-wide uppercase">Fecha</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Fecha</label>
             <input
               v-model="fecha"
               type="date"
@@ -38,7 +38,7 @@
 
           <p
             v-if="errorMessage"
-            class="bg-red-50 border border-red-200 rounded-lg text-sm text-red-700 px-3 py-2"
+            class="bg-red-50 border border-red-200 rounded-lg text-sm md:text-base text-red-700 px-3 py-2"
             role="alert"
           >
             {{ errorMessage }}
@@ -47,7 +47,7 @@
           <div class="flex items-center justify-end gap-2">
             <button
               type="button"
-              class="rounded-full text-sm text-stone-500 hover:text-stone-900 transition-colors px-3 py-2"
+              class="rounded-full text-sm md:text-base text-stone-500 hover:text-stone-900 transition-colors px-3 py-2"
               :disabled="loading"
               @click="open = false"
             >
@@ -56,7 +56,7 @@
             <button
               type="submit"
               :disabled="!tematica.trim() || loading"
-              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 disabled:bg-stone-200 rounded-full text-sm text-white disabled:text-stone-400 font-semibold disabled:cursor-not-allowed transition-all px-4 py-2"
+              class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 disabled:bg-stone-200 rounded-full text-sm md:text-base text-white disabled:text-stone-400 font-semibold disabled:cursor-not-allowed transition-all px-4 py-2"
             >
               <UIcon
                 :name="loading ? 'i-lucide-loader-circle' : 'i-lucide-check'"
