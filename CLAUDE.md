@@ -37,6 +37,8 @@ pnpm. JS puro. Light mode único (`ui: { colorMode: false }`). Deploy pendiente 
 - **Los uploads ocurren en el submit**, no al elegir el archivo: un formulario cancelado no deja basura en el bucket.
 - **Cada asset pendiente lleva su propio `File`** (`asset.file`). Antes había un array paralelo `archivosNuevos` y se buscaba el archivo por nombre — dos archivos con el mismo nombre en un submit hacían que el segundo nunca se subiera.
 - **`remove()` borra la fila antes que los archivos.** Si falla Storage quedan huérfanos, pero la UI queda consistente. El orden inverso dejaría una idea sin imagen si falla el delete de la fila.
+- **La limpieza de Storage es best-effort y nunca invalida la operación principal.** Tanto en `remove()` como en el submit de `Form.vue`, el `removeFiles` va en su propio `try/catch`: si falla, la fila ya se borró o el update ya se guardó, y mostrar "no pudimos guardar" sería mentirle al usuario. El costo es un archivo huérfano en el bucket.
+- **La temática en curso se muestra aparte, arriba de la grilla** (solo con sesión), y se excluye del listado para no duplicarla. Es el atajo para completarla al cierre de la reunión.
 - **`watch: [user]` en los `useAsyncData`:** al loguearse, RLS devuelve también las en curso, así que hay que refetchear.
 - **Fechas parseadas con `T12:00:00`:** `new Date('2026-07-27')` se interpreta como UTC medianoche y en Argentina (UTC-3) mostraría el día anterior.
 - **Búsqueda en cliente.** A ~50 filas por año el filtro en memoria es instantáneo. Full-text search en Postgres recién tendría sentido pasadas varias centenas.
