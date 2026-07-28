@@ -29,6 +29,10 @@ importers:
       vue-router:
         specifier: ^5.2.0
         version: 5.2.0(@vue/compiler-sfc@3.5.40)(esbuild@0.28.1)(rolldown@1.2.0)(rollup@4.62.3)(vite@8.1.5(esbuild@0.28.1)(jiti@2.7.0)(terser@5.49.0)(yaml@2.9.0))(vue@3.5.40(typescript@6.0.3))
+    devDependencies:
+      '@iconify-json/lucide':
+        specifier: ^1.2.120
+        version: 1.2.120
 
 packages:
 
@@ -569,6 +573,9 @@ packages:
 
   '@floating-ui/vue@1.1.11':
     resolution: {integrity: sha512-HzHKCNVxnGS35r9fCHBc3+uCnjw9IWIlCPL683cGgM9Kgj2BiAl8x1mS7vtvP6F9S/e/q4O6MApwSHj8hNLGfw==}
+
+  '@iconify-json/lucide@1.2.120':
+    resolution: {integrity: sha512-4ECF24fxag1n5tZlPGrbWuCGqhkwD0rvAzfCXretqQb4KEC8Y6ja3khF8qmvpR1Mk0NQDhBTRK3Fr/YoV8QyJw==}
 
   '@iconify/collections@1.0.715':
     resolution: {integrity: sha512-4EP9EOD9qx/Ybu+FtepdxL49FV1mFKsPuLTl06ccwvP5lZyErzTy5CODamEnsnKsYr+8jle2DdlDxqzVBok9hQ==}
@@ -4994,6 +5001,10 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
       - vue
+
+  '@iconify-json/lucide@1.2.120':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify/collections@1.0.715':
     dependencies:
