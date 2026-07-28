@@ -314,7 +314,12 @@ const onSubmit = async () => {
     patch.assets = assets
 
     await update(props.idea.id, patch)
-    await removeFiles(pathsAQuitar.value)
+
+    try {
+      await removeFiles(pathsAQuitar.value)
+    } catch {
+      pathsAQuitar.value = []
+    }
 
     open.value = false
     emit('saved')

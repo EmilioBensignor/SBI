@@ -98,7 +98,12 @@ export const useIdeas = () => {
       idea.imagen_path,
       ...(idea.assets || []).filter((a) => a.tipo === 'file').map((a) => a.path),
     ]
-    await removeFiles(paths)
+
+    try {
+      await removeFiles(paths)
+    } catch {
+      return
+    }
   }
 
   return { fetchAll, fetchBySlug, create, update, remove, enCurso }

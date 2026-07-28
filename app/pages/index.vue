@@ -23,6 +23,21 @@
       </ol>
     </section>
 
+    <NuxtLink
+      v-if="user && enCurso"
+      :to="`/idea/${enCurso.slug}`"
+      class="group flex flex-wrap items-center justify-between gap-3 border border-amber-200 hover:border-amber-300 rounded-2xl bg-amber-50/60 transition-colors px-5 py-4"
+    >
+      <div class="flex flex-col gap-0.5">
+        <span class="text-[10px] text-amber-700 font-medium tracking-wide uppercase">Temática en curso</span>
+        <span class="text-lg text-stone-900 font-medium">{{ enCurso.tematica }}</span>
+      </div>
+      <span class="flex items-center gap-1.5 text-sm text-stone-500 group-hover:text-stone-900 transition-colors">
+        Completar la idea ganadora
+        <UIcon name="i-lucide-arrow-right" class="size-4" />
+      </span>
+    </NuxtLink>
+
     <section class="flex flex-col gap-6">
       <div class="flex flex-wrap items-center justify-between gap-3">
         <div class="w-full max-w-xs flex items-center gap-2 border-b border-stone-200 focus-within:border-primary-500 transition-colors">
@@ -56,7 +71,7 @@
       </div>
 
       <EmptyState
-        v-else-if="!ideas.length"
+        v-else-if="!listadas.length && !query"
         title="Todavía no hay ideas"
         description="Cuando cargues la primera temática va a aparecer acá."
       />
@@ -77,7 +92,7 @@
 
 <script setup>
 const { user } = useAuth()
-const { fetchAll } = useIdeas()
+const { fetchAll, enCurso: esEnCurso } = useIdeas()
 
 const pasos = [
   { titulo: 'Propuesta de temática', detalle: 'Elegimos una y la anotamos acá.' },
@@ -96,10 +111,16 @@ const { data: ideas, pending, refresh } = await useAsyncData(
   { default: () => [], watch: [user] }
 )
 
+const enCurso = computed(() => ideas.value.find(esEnCurso) || null)
+
+const listadas = computed(() =>
+  enCurso.value ? ideas.value.filter((idea) => idea.id !== enCurso.value.id) : ideas.value
+)
+
 const filtradas = computed(() => {
   const q = query.value.trim().toLowerCase()
-  if (!q) return ideas.value
-  return ideas.value.filter((idea) =>
+  if (!q) return listadas.value
+  return listadas.value.filter((idea) =>
     [idea.tematica, idea.titulo, idea.desarrollo]
       .filter(Boolean)
       .some((field) => field.toLowerCase().includes(q))
