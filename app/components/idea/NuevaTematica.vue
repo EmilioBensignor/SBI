@@ -36,6 +36,17 @@
             >
           </div>
 
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Desafío</label>
+            <textarea
+              v-model="desafio"
+              rows="3"
+              placeholder="Opcional: la consigna de esta semana…"
+              class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm md:text-base text-stone-900 placeholder:text-stone-300 leading-relaxed resize-none outline-none transition-colors px-3 py-2.5"
+              :disabled="loading"
+            />
+          </div>
+
           <p
             v-if="errorMessage"
             class="bg-red-50 border border-red-200 rounded-lg text-sm md:text-base text-red-700 px-3 py-2"
@@ -74,11 +85,12 @@
 <script setup>
 const emit = defineEmits(['created'])
 
-const { create } = useIdeas()
+const { create } = useTematicas()
 
 const open = ref(false)
 const tematica = ref('')
 const fecha = ref(new Date().toISOString().slice(0, 10))
+const desafio = ref('')
 const loading = ref(false)
 const errorMessage = ref('')
 
@@ -87,10 +99,15 @@ const onSubmit = async () => {
   loading.value = true
 
   try {
-    const idea = await create({ tematica: tematica.value, fecha: fecha.value })
+    const creada = await create({
+      tematica: tematica.value,
+      fecha: fecha.value,
+      desafio: desafio.value,
+    })
     open.value = false
     tematica.value = ''
-    emit('created', idea)
+    desafio.value = ''
+    emit('created', creada)
   } catch (e) {
     errorMessage.value = e.message || 'No pudimos crear la temática'
   } finally {

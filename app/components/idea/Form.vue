@@ -1,6 +1,7 @@
 <template>
   <div>
     <button
+      v-if="idea"
       type="button"
       class="flex items-center gap-1.5 rounded-full text-sm md:text-base text-stone-500 hover:text-stone-900 transition-colors px-2 py-1"
       @click="abrir"
@@ -9,31 +10,21 @@
       <span>Editar</span>
     </button>
 
-    <USlideover v-model:open="open" title="Editar idea">
+    <button
+      v-else
+      type="button"
+      class="flex items-center gap-1.5 bg-stone-900 hover:bg-stone-700 rounded-full text-sm md:text-base text-white font-medium transition-colors px-4 py-2"
+      @click="abrir"
+    >
+      <UIcon name="i-lucide-plus" class="size-4" />
+      <span>Agregar idea</span>
+    </button>
+
+    <USlideover v-model:open="open" :title="idea ? 'Editar idea' : 'Nueva idea'">
       <template #body>
         <form class="flex flex-col gap-6" @submit.prevent="onSubmit">
           <div class="flex flex-col gap-1.5">
-            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Temática</label>
-            <input
-              v-model="form.tematica"
-              type="text"
-              class="w-full bg-transparent border-b-2 border-stone-200 focus:border-primary-500 text-base text-stone-900 outline-none transition-colors py-2"
-              required
-            >
-          </div>
-
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Fecha</label>
-            <input
-              v-model="form.fecha"
-              type="date"
-              class="w-full bg-transparent border-b-2 border-stone-200 focus:border-primary-500 text-base text-stone-900 outline-none transition-colors py-2"
-              required
-            >
-          </div>
-
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Título de la idea</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Título</label>
             <input
               v-model="form.titulo"
               type="text"
@@ -42,39 +33,28 @@
             >
           </div>
 
-          <div class="flex flex-col gap-2">
-            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Imagen</label>
-            <div v-if="imagenPreview" class="relative overflow-hidden bg-stone-100 rounded-xl">
-              <img :src="imagenPreview" alt="" class="w-full aspect-4/3 object-cover">
-              <button
-                type="button"
-                class="absolute top-2 right-2 size-8 flex items-center justify-center bg-white/90 hover:bg-white rounded-full text-stone-600 hover:text-red-600 transition-colors"
-                aria-label="Quitar imagen"
-                @click="quitarImagen"
-              >
-                <UIcon name="i-lucide-x" class="size-4" />
-              </button>
-            </div>
+          <div class="flex flex-col gap-1.5">
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Marca</label>
             <input
-              type="file"
-              accept="image/*"
-              class="text-sm md:text-base text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm md:text-base file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
-              @change="onImagenChange"
+              v-model="form.marca"
+              type="text"
+              placeholder="Coca-Cola"
+              class="w-full bg-transparent border-b-2 border-stone-200 focus:border-primary-500 text-base text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-2"
             >
           </div>
 
-          <div class="flex flex-col gap-1.5">
-            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Desarrollo</label>
+          <div v-for="campo in CAMPOS" :key="campo.key" class="flex flex-col gap-1.5">
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">{{ campo.label }}</label>
             <textarea
-              v-model="form.desarrollo"
-              rows="8"
-              placeholder="El desarrollo profundo de la idea…"
-              class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm md:text-base text-stone-900 placeholder:text-stone-300 leading-relaxed outline-none transition-colors px-3 py-2.5"
+              v-model="form[campo.key]"
+              :rows="campo.rows"
+              :placeholder="campo.placeholder"
+              class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm md:text-base text-stone-900 placeholder:text-stone-300 leading-relaxed resize-none outline-none transition-colors px-3 py-2.5"
             />
           </div>
 
           <div class="flex flex-col gap-3">
-            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Assets extra</label>
+            <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Imágenes, audios y links</label>
 
             <ul v-if="form.assets.length" class="flex flex-col gap-2">
               <li
@@ -82,10 +62,7 @@
                 :key="`${asset.url}-${i}`"
                 class="flex items-center gap-2 border border-stone-200 rounded-xl px-3 py-2"
               >
-                <UIcon
-                  :name="asset.tipo === 'file' ? 'i-lucide-paperclip' : 'i-lucide-link'"
-                  class="size-4 shrink-0 text-stone-400"
-                />
+                <UIcon :name="ICONOS[asset.tipo] || 'i-lucide-paperclip'" class="size-4 shrink-0 text-stone-400" />
                 <span class="flex-1 text-sm md:text-base text-stone-700 truncate">{{ asset.label || asset.url }}</span>
                 <button
                   type="button"
@@ -126,32 +103,10 @@
               <input
                 type="file"
                 multiple
+                accept="image/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx"
                 class="text-sm md:text-base text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm md:text-base file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
                 @change="onArchivosChange"
               >
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-5 border-t border-stone-100 pt-5">
-            <div class="flex flex-col gap-1.5">
-              <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">Puntaje</label>
-              <input
-                v-model.number="form.puntaje"
-                type="number"
-                min="1"
-                max="10"
-                placeholder="8"
-                class="w-20 bg-transparent border-b-2 border-stone-200 focus:border-primary-500 text-base text-stone-900 placeholder:text-stone-300 tabular-nums outline-none transition-colors py-2"
-              >
-            </div>
-
-            <div v-for="campo in CAMPOS_EVAL" :key="campo.key" class="flex flex-col gap-1.5">
-              <label class="text-xs md:text-sm text-stone-500 font-medium tracking-wide uppercase">{{ campo.label }}</label>
-              <textarea
-                v-model="form[campo.key]"
-                rows="3"
-                class="w-full bg-transparent border border-stone-200 focus:border-primary-500 rounded-xl text-sm md:text-base text-stone-900 leading-relaxed outline-none transition-colors px-3 py-2.5"
-              />
             </div>
           </div>
 
@@ -174,7 +129,7 @@
             </button>
             <button
               type="submit"
-              :disabled="loading"
+              :disabled="loading || !tieneIdentidad"
               class="flex items-center gap-1.5 bg-primary-500 hover:bg-primary-600 disabled:bg-stone-200 rounded-full text-sm md:text-base text-white disabled:text-stone-400 font-semibold disabled:cursor-not-allowed transition-all px-4 py-2"
             >
               <UIcon
@@ -192,65 +147,54 @@
 
 <script setup>
 const props = defineProps({
-  idea: { type: Object, required: true },
+  tematica: { type: Object, required: true },
+  idea: { type: Object, default: null },
 })
 const emit = defineEmits(['saved'])
 
-const { update } = useIdeas()
-const { uploadFile, removeFiles } = useStorage()
+const { create, update } = useIdeas()
+const { uploadFile, removeFiles, tipoDeArchivo } = useStorage()
 
-const CAMPOS_EVAL = [
-  { key: 'correcciones', label: 'Correcciones' },
-  { key: 'destaques', label: 'Destaques' },
-  { key: 'oportunidades', label: 'Oportunidades' },
+const CAMPOS = [
+  { key: 'insight', label: 'Insight', rows: 3, placeholder: 'La verdad humana detrás de la idea…' },
+  { key: 'concepto', label: 'Concepto', rows: 3, placeholder: 'Cómo se traduce en una pieza…' },
+  { key: 'anotaciones', label: 'Anotaciones', rows: 5, placeholder: 'Lo que salió en el debate…' },
 ]
+
+const ICONOS = {
+  imagen: 'i-lucide-image',
+  audio: 'i-lucide-audio-lines',
+  link: 'i-lucide-link',
+  file: 'i-lucide-paperclip',
+}
 
 const open = ref(false)
 const loading = ref(false)
 const errorMessage = ref('')
 
-const form = ref({})
-const imagenFile = ref(null)
-const imagenPreview = ref('')
-const imagenQuitada = ref(false)
+const form = ref({ assets: [] })
 const pathsAQuitar = ref([])
 const nuevoLink = ref('')
 const nuevoLabel = ref('')
 
+const tieneIdentidad = computed(() =>
+  Boolean(form.value.titulo?.trim() || form.value.marca?.trim())
+)
+
 const abrir = () => {
   form.value = {
-    tematica: props.idea.tematica || '',
-    fecha: props.idea.fecha || '',
-    titulo: props.idea.titulo || '',
-    desarrollo: props.idea.desarrollo || '',
-    puntaje: props.idea.puntaje ?? null,
-    correcciones: props.idea.correcciones || '',
-    destaques: props.idea.destaques || '',
-    oportunidades: props.idea.oportunidades || '',
-    assets: [...(props.idea.assets || [])],
+    titulo: props.idea?.titulo || '',
+    marca: props.idea?.marca || '',
+    insight: props.idea?.insight || '',
+    concepto: props.idea?.concepto || '',
+    anotaciones: props.idea?.anotaciones || '',
+    assets: [...(props.idea?.assets || [])],
   }
-  imagenFile.value = null
-  imagenPreview.value = props.idea.imagen_url || ''
-  imagenQuitada.value = false
   pathsAQuitar.value = []
   nuevoLink.value = ''
   nuevoLabel.value = ''
   errorMessage.value = ''
   open.value = true
-}
-
-const onImagenChange = (event) => {
-  const file = event.target.files?.[0]
-  if (!file) return
-  imagenFile.value = file
-  imagenPreview.value = URL.createObjectURL(file)
-  imagenQuitada.value = false
-}
-
-const quitarImagen = () => {
-  imagenFile.value = null
-  imagenPreview.value = ''
-  imagenQuitada.value = true
 }
 
 const agregarLink = () => {
@@ -264,14 +208,21 @@ const agregarLink = () => {
 const onArchivosChange = (event) => {
   const files = Array.from(event.target.files || [])
   for (const file of files) {
-    form.value.assets.push({ tipo: 'file', url: '', path: '', label: file.name, pendiente: true, file })
+    form.value.assets.push({
+      tipo: tipoDeArchivo(file),
+      url: '',
+      path: '',
+      label: file.name,
+      pendiente: true,
+      file,
+    })
   }
   event.target.value = ''
 }
 
 const quitarAsset = (index) => {
   const [asset] = form.value.assets.splice(index, 1)
-  if (asset.tipo === 'file' && !asset.pendiente && asset.path) pathsAQuitar.value.push(asset.path)
+  if (!asset.pendiente && asset.path) pathsAQuitar.value.push(asset.path)
 }
 
 const onSubmit = async () => {
@@ -279,28 +230,6 @@ const onSubmit = async () => {
   loading.value = true
 
   try {
-    const patch = {
-      tematica: form.value.tematica,
-      fecha: form.value.fecha,
-      titulo: form.value.titulo,
-      desarrollo: form.value.desarrollo,
-      puntaje: form.value.puntaje || null,
-      correcciones: form.value.correcciones,
-      destaques: form.value.destaques,
-      oportunidades: form.value.oportunidades,
-    }
-
-    if (imagenFile.value) {
-      const { publicUrl, path } = await uploadFile(imagenFile.value, props.idea.slug)
-      patch.imagen_url = publicUrl
-      patch.imagen_path = path
-      if (props.idea.imagen_path) pathsAQuitar.value.push(props.idea.imagen_path)
-    } else if (imagenQuitada.value) {
-      patch.imagen_url = null
-      patch.imagen_path = null
-      if (props.idea.imagen_path) pathsAQuitar.value.push(props.idea.imagen_path)
-    }
-
     const assets = []
     for (const asset of form.value.assets) {
       if (!asset.pendiente) {
@@ -308,12 +237,21 @@ const onSubmit = async () => {
         continue
       }
       if (!asset.file) continue
-      const { publicUrl, path } = await uploadFile(asset.file, props.idea.slug)
-      assets.push({ tipo: 'file', url: publicUrl, path, label: asset.label })
+      const { publicUrl, path } = await uploadFile(asset.file, props.tematica.slug)
+      assets.push({ tipo: asset.tipo, url: publicUrl, path, label: asset.label })
     }
-    patch.assets = assets
 
-    await update(props.idea.id, patch)
+    const patch = {
+      titulo: form.value.titulo,
+      marca: form.value.marca,
+      insight: form.value.insight,
+      concepto: form.value.concepto,
+      anotaciones: form.value.anotaciones,
+      assets,
+    }
+
+    if (props.idea) await update(props.idea.id, patch)
+    else await create(props.tematica.id, patch)
 
     try {
       await removeFiles(pathsAQuitar.value)
@@ -324,7 +262,7 @@ const onSubmit = async () => {
     open.value = false
     emit('saved')
   } catch (e) {
-    errorMessage.value = e.message || 'No pudimos guardar los cambios'
+    errorMessage.value = e.message || 'No pudimos guardar la idea'
   } finally {
     loading.value = false
   }

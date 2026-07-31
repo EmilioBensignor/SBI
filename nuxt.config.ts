@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     redirectOptions: {
       login: '/login',
       callback: '/confirm',
-      exclude: ['/', '/idea/**', '/login'],
+      exclude: ['/', '/tematica/**', '/login'],
       saveRedirectToCookie: false,
     },
     cookieOptions: {

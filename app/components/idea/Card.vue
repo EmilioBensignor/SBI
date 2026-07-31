@@ -1,51 +1,46 @@
 <template>
   <NuxtLink
-    :to="`/idea/${idea.slug}`"
-    class="group flex flex-col gap-3"
+    :to="`/tematica/${tematica.slug}`"
+    class="group flex flex-col gap-2 border border-stone-200 hover:border-stone-300 rounded-2xl transition-colors px-5 py-5"
   >
-    <div class="aspect-4/3 overflow-hidden bg-stone-100 rounded-2xl">
-      <img
-        v-if="idea.imagen_url"
-        :src="thumb(idea.imagen_url, 640)"
-        :alt="idea.titulo || idea.tematica"
-        class="size-full object-cover group-hover:scale-[1.03] transition-transform duration-500"
-        width="640"
-        height="480"
-        loading="lazy"
-        decoding="async"
+    <div class="flex items-center gap-2">
+      <span class="text-xs md:text-sm text-stone-400 tracking-wide uppercase">{{ fechaLarga }}</span>
+      <span
+        v-if="!cerrada"
+        class="bg-amber-50 rounded-full text-[10px] md:text-sm text-amber-700 font-medium tracking-wide uppercase px-2 py-0.5"
       >
-      <div v-else class="size-full flex items-center justify-center">
-        <UIcon name="i-lucide-image-off" class="size-6 text-stone-300" />
-      </div>
+        En curso
+      </span>
     </div>
 
-    <div class="flex flex-col gap-1">
-      <div class="flex items-center gap-2">
-        <span class="text-xs md:text-sm text-stone-400 tracking-wide uppercase">{{ idea.tematica }}</span>
-        <span
-          v-if="!idea.titulo"
-          class="bg-amber-50 rounded-full text-[10px] md:text-sm text-amber-700 font-medium tracking-wide uppercase px-2 py-0.5"
-        >
-          En curso
-        </span>
-      </div>
-      <h3 class="text-lg text-stone-900 font-medium leading-snug group-hover:text-primary-600 transition-colors">
-        {{ idea.titulo || 'Sin idea ganadora todavía' }}
-      </h3>
-      <span class="text-xs md:text-base text-stone-400">{{ fechaLarga }}</span>
-    </div>
+    <h3 class="text-lg text-stone-900 font-medium leading-snug group-hover:text-primary-600 transition-colors">
+      {{ tematica.tematica }}
+    </h3>
+
+    <p v-if="tematica.desafio" class="text-sm md:text-base text-stone-500 leading-relaxed line-clamp-2">
+      {{ tematica.desafio }}
+    </p>
+
+    <span class="flex items-center gap-1.5 text-xs md:text-sm text-stone-400 pt-1">
+      <UIcon name="i-lucide-lightbulb" class="size-3.5" />
+      {{ cantidad === 1 ? '1 idea' : `${cantidad} ideas` }}
+    </span>
   </NuxtLink>
 </template>
 
 <script setup>
 const props = defineProps({
-  idea: { type: Object, required: true },
+  tematica: { type: Object, required: true },
 })
 
-const { thumb } = useStorage()
+const { estaCerrada } = useTematicas()
+
+const cantidad = computed(() => props.tematica.ideas?.length || 0)
+
+const cerrada = computed(() => estaCerrada(props.tematica))
 
 const fechaLarga = computed(() =>
-  new Date(`${props.idea.fecha}T12:00:00`).toLocaleDateString('es-AR', {
+  new Date(`${props.tematica.fecha}T12:00:00`).toLocaleDateString('es-AR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

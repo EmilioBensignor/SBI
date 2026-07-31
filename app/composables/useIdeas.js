@@ -1,61 +1,38 @@
-const COLUMNS = 'id, slug, tematica, fecha, titulo, imagen_url, imagen_path, desarrollo, assets, puntaje, correcciones, destaques, oportunidades, created_by, created_at, updated_at'
+const COLUMNS = 'id, tematica_id, orden, titulo, marca, insight, concepto, anotaciones, assets, created_by, created_at, updated_at'
 
-const TEXT_FIELDS = ['titulo', 'desarrollo', 'correcciones', 'destaques', 'oportunidades']
+const TEXT_FIELDS = ['insight', 'concepto', 'anotaciones']
+
+const FALTA_IDENTIDAD = 'La idea necesita un título o una marca'
 
 export const useIdeas = () => {
   const supabase = useSupabaseClient()
   const { removeFiles } = useStorage()
 
-  const enCurso = (idea) => !idea?.titulo
-
-  const fetchAll = async () => {
-    const { data, error } = await supabase
-      .from('ideas_tematicas')
-      .select(COLUMNS)
-      .order('fecha', { ascending: false })
-      .order('created_at', { ascending: false })
-
-    if (error) throw error
-    return data || []
-  }
-
-  const fetchBySlug = async (slug) => {
-    const { data, error } = await supabase
-      .from('ideas_tematicas')
-      .select(COLUMNS)
-      .eq('slug', slug)
-      .maybeSingle()
-
-    if (error) throw error
-    return data
-  }
-
-  const create = async ({ tematica, fecha }) => {
-    const clean = (tematica || '').trim()
-    const base = slugify(clean)
-    if (!base) throw new Error('La temática no genera una URL válida')
+  const create = async (tematicaId, patch) => {
+    const titulo = (patch.titulo || '').trim()
+    const marca = (patch.marca || '').trim()
+    if (!titulo && !marca) throw new Error(FALTA_IDENTIDAD)
 
     const { data: { user: authUser } } = await supabase.auth.getUser()
     if (!authUser?.id) throw new Error('Sin sesión activa')
 
-    for (let attempt = 0; attempt < 5; attempt++) {
-      const slug = attempt === 0 ? base : `${base}-${attempt + 1}`
-      const { data, error } = await supabase
-        .from('ideas_tematicas')
-        .insert({
-          slug,
-          tematica: clean,
-          fecha: fecha || new Date().toISOString().slice(0, 10),
-          created_by: authUser.id,
-        })
-        .select(COLUMNS)
-        .single()
+    const { data, error } = await supabase
+      .from('ideas')
+      .insert({
+        tematica_id: tematicaId,
+        titulo: titulo || null,
+        marca: marca || null,
+        insight: patch.insight?.trim() || null,
+        concepto: patch.concepto?.trim() || null,
+        anotaciones: patch.anotaciones?.trim() || null,
+        assets: patch.assets || [],
+        created_by: authUser.id,
+      })
+      .select(COLUMNS)
+      .single()
 
-      if (!error) return data
-      if (error.code !== '23505') throw error
-    }
-
-    throw new Error('Ya existe una temática con ese nombre')
+    if (error) throw error
+    return data
   }
 
   const update = async (id, patch) => {
@@ -64,19 +41,15 @@ export const useIdeas = () => {
     for (const field of TEXT_FIELDS) {
       if (field in patch) clean[field] = patch[field]?.trim() || null
     }
-    if ('tematica' in patch) {
-      const tematica = (patch.tematica || '').trim()
-      if (!tematica) throw new Error('La temática no puede quedar vacía')
-      clean.tematica = tematica
+    if ('titulo' in patch) clean.titulo = (patch.titulo || '').trim() || null
+    if ('marca' in patch) clean.marca = (patch.marca || '').trim() || null
+    if ('titulo' in patch && 'marca' in patch && !clean.titulo && !clean.marca) {
+      throw new Error(FALTA_IDENTIDAD)
     }
-    if ('fecha' in patch) clean.fecha = patch.fecha
-    if ('puntaje' in patch) clean.puntaje = patch.puntaje ?? null
     if ('assets' in patch) clean.assets = patch.assets || []
-    if ('imagen_url' in patch) clean.imagen_url = patch.imagen_url || null
-    if ('imagen_path' in patch) clean.imagen_path = patch.imagen_path || null
 
     const { data, error } = await supabase
-      .from('ideas_tematicas')
+      .from('ideas')
       .update(clean)
       .eq('id', id)
       .select(COLUMNS)
@@ -88,16 +61,13 @@ export const useIdeas = () => {
 
   const remove = async (idea) => {
     const { error } = await supabase
-      .from('ideas_tematicas')
+      .from('ideas')
       .delete()
       .eq('id', idea.id)
 
     if (error) throw error
 
-    const paths = [
-      idea.imagen_path,
-      ...(idea.assets || []).filter((a) => a.tipo === 'file').map((a) => a.path),
-    ]
+    const paths = (idea.assets || []).filter((asset) => asset.path).map((asset) => asset.path)
 
     try {
       await removeFiles(paths)
@@ -106,5 +76,5 @@ export const useIdeas = () => {
     }
   }
 
-  return { fetchAll, fetchBySlug, create, update, remove, enCurso }
+  return { create, update, remove }
 }

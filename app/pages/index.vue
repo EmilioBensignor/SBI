@@ -1,20 +1,16 @@
 <template>
-  <div class="flex flex-col gap-16">
-    <h1 class="text-4xl md:text-5xl text-stone-900 font-semibold tracking-tight">
-      Stupid Big Ideas
-    </h1>
-
+  <div class="flex flex-col gap-10">
     <NuxtLink
       v-if="user && enCurso"
-      :to="`/idea/${enCurso.slug}`"
+      :to="`/tematica/${enCurso.slug}`"
       class="group flex flex-wrap items-center justify-between gap-3 border border-amber-200 hover:border-amber-300 rounded-2xl bg-amber-50/60 transition-colors px-5 py-4"
     >
       <div class="flex flex-col gap-0.5">
-        <span class="text-[10px] md:text-sm text-amber-700 font-medium tracking-wide uppercase">Temática en curso</span>
-        <span class="text-lg text-stone-900 font-medium">{{ enCurso.tematica }}</span>
+        <span class="text-[10px] md:text-sm text-amber-700 font-medium tracking-wide uppercase">Temática</span>
+        <span class="text-2xl md:text-3xl text-stone-900 font-semibold tracking-tight">{{ enCurso.tematica }}</span>
       </div>
       <span class="flex items-center gap-1.5 text-sm md:text-base text-stone-500 group-hover:text-stone-900 transition-colors">
-        Completar la idea ganadora
+        Anotar ideas
         <UIcon name="i-lucide-arrow-right" class="size-4" />
       </span>
     </NuxtLink>
@@ -26,9 +22,9 @@
           <input
             v-model="query"
             type="search"
-            placeholder="Buscar una idea…"
+            placeholder="Buscar una temática…"
             class="w-full flex-1 bg-transparent text-sm md:text-base text-stone-900 placeholder:text-stone-300 outline-none py-2"
-            aria-label="Buscar ideas"
+            aria-label="Buscar temáticas"
           >
         </div>
 
@@ -43,20 +39,18 @@
         {{ errorMessage }}
       </p>
 
-      <div v-if="pending" class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-        <div v-for="n in 6" :key="n" class="flex flex-col gap-3">
-          <USkeleton class="aspect-4/3 w-full rounded-2xl" />
-          <div class="flex flex-col gap-1.5">
-            <USkeleton class="h-3 w-20" />
-            <USkeleton class="h-5 w-full" />
-            <USkeleton class="h-3 w-28" />
-          </div>
+      <div v-if="pending" class="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div v-for="n in 6" :key="n" class="flex flex-col gap-2 border border-stone-200 rounded-2xl px-5 py-5">
+          <USkeleton class="h-3 w-28" />
+          <USkeleton class="h-6 w-3/4" />
+          <USkeleton class="h-4 w-full" />
+          <USkeleton class="h-3 w-16 mt-1" />
         </div>
       </div>
 
       <EmptyState
         v-else-if="!listadas.length && !query"
-        title="Todavía no hay ideas"
+        title="Todavía no hay temáticas"
         description="Cuando cargues la primera temática va a aparecer acá."
       />
 
@@ -67,8 +61,8 @@
         :description="`No encontramos nada para “${query}”.`"
       />
 
-      <div v-else class="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
-        <IdeaCard v-for="idea in filtradas" :key="idea.id" :idea="idea" />
+      <div v-else class="grid gap-x-6 gap-y-6 sm:grid-cols-2 lg:grid-cols-3">
+        <IdeaCard v-for="tematica in filtradas" :key="tematica.id" :tematica="tematica" />
       </div>
     </section>
   </div>
@@ -76,38 +70,38 @@
 
 <script setup>
 const { user } = useAuth()
-const { fetchAll, enCurso: esEnCurso } = useIdeas()
+const { fetchAll, estaCerrada } = useTematicas()
 
 const query = ref('')
 const errorMessage = ref('')
 
-const { data: ideas, status, refresh } = await useAsyncData(
-  'ideas',
+const { data: tematicas, status, refresh } = await useAsyncData(
+  'tematicas',
   () => fetchAll(),
   { default: () => [], watch: [user], lazy: true }
 )
 
 const pending = computed(() => status.value === 'pending')
 
-const enCurso = computed(() => ideas.value.find(esEnCurso) || null)
+const enCurso = computed(() => tematicas.value.find((t) => !estaCerrada(t)) || null)
 
 const listadas = computed(() =>
-  enCurso.value ? ideas.value.filter((idea) => idea.id !== enCurso.value.id) : ideas.value
+  enCurso.value ? tematicas.value.filter((t) => t.id !== enCurso.value.id) : tematicas.value
 )
 
 const filtradas = computed(() => {
   const q = query.value.trim().toLowerCase()
   if (!q) return listadas.value
-  return listadas.value.filter((idea) =>
-    [idea.tematica, idea.titulo, idea.desarrollo]
+  return listadas.value.filter((tematica) =>
+    [tematica.tematica, tematica.desafio]
       .filter(Boolean)
       .some((field) => field.toLowerCase().includes(q))
   )
 })
 
-const onCreated = async (idea) => {
+const onCreated = async (tematica) => {
   errorMessage.value = ''
   await refresh()
-  await navigateTo(`/idea/${idea.slug}`)
+  await navigateTo(`/tematica/${tematica.slug}`)
 }
 </script>
