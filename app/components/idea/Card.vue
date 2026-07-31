@@ -3,7 +3,7 @@
     :to="`/tematica/${tematica.slug}`"
     class="group flex flex-col gap-2 border border-stone-200 hover:border-stone-300 rounded-2xl transition-colors px-5 py-5"
   >
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
       <span class="text-xs md:text-sm text-stone-400 tracking-wide uppercase">{{ fechaLarga }}</span>
       <span
         v-if="!cerrada"
@@ -11,6 +11,12 @@
       >
         En curso
       </span>
+      <Lamparitas
+        v-if="tematica.puntaje !== null"
+        :model-value="Number(tematica.puntaje)"
+        readonly
+        class="ml-auto"
+      />
     </div>
 
     <h3 class="text-lg text-stone-900 font-medium leading-snug group-hover:text-primary-600 transition-colors">

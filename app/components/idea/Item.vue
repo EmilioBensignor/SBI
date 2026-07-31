@@ -1,11 +1,11 @@
 <template>
-  <article class="flex flex-col gap-4 border-t border-stone-100 pt-8">
+  <article class="flex flex-col gap-4 border-t border-stone-100 pt-6 md:pt-8">
     <header class="flex flex-wrap items-start justify-between gap-3">
-      <div class="flex flex-col gap-1">
+      <div class="min-w-0 flex flex-col gap-1">
         <span v-if="idea.marca" class="text-xs md:text-sm text-stone-400 font-medium tracking-wide uppercase">
           {{ idea.titulo }}
         </span>
-        <h3 class="text-xl md:text-2xl text-stone-900 font-semibold tracking-tight leading-tight">
+        <h3 class="text-lg iph:text-xl md:text-2xl text-stone-900 font-semibold tracking-tight leading-tight text-balance">
           {{ idea.marca || idea.titulo }}
         </h3>
       </div>

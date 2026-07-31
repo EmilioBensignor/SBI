@@ -4,12 +4,16 @@
 @theme {
   --font-sans: 'Outfit', system-ui, sans-serif;
 
+  --breakpoint-*: initial;
+  --breakpoint-iph: 402px;
   --breakpoint-sm: 480px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1080px;
   --breakpoint-xl: 1280px;
   --breakpoint-xxl: 1440px;
 }
+
+@custom-variant mac (@media (min-width: 1280px) and (max-height: 900px));
 
 button,
 a,

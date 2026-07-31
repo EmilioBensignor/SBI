@@ -76,18 +76,18 @@
             </ul>
 
             <div class="flex flex-col gap-2 border border-dashed border-stone-200 rounded-xl p-3">
-              <div class="flex gap-2">
+              <div class="flex flex-wrap items-end gap-2">
                 <input
                   v-model="nuevoLink"
                   type="url"
                   placeholder="https://tiktok.com/…"
-                  class="w-full flex-1 bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm md:text-base text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
+                  class="w-full sm:w-auto sm:flex-1 bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm md:text-base text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
                 >
                 <input
                   v-model="nuevoLabel"
                   type="text"
                   placeholder="Etiqueta"
-                  class="w-28 bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm md:text-base text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
+                  class="w-24 flex-1 sm:w-28 sm:flex-none bg-transparent border-b border-stone-200 focus:border-primary-500 text-sm md:text-base text-stone-900 placeholder:text-stone-300 outline-none transition-colors py-1.5"
                 >
                 <button
                   type="button"
@@ -104,7 +104,7 @@
                 type="file"
                 multiple
                 accept="image/*,audio/*,.pdf,.doc,.docx,.ppt,.pptx"
-                class="text-sm md:text-base text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm md:text-base file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
+                class="w-full text-sm md:text-base text-stone-500 file:mr-3 file:bg-stone-100 file:hover:bg-stone-200 file:border-0 file:rounded-full file:text-sm file:md:text-base file:text-stone-700 file:font-medium file:transition-colors file:px-3 file:py-1.5"
                 @change="onArchivosChange"
               >
             </div>

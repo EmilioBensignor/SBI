@@ -12,14 +12,14 @@
     <div
       v-for="n in 5"
       :key="n"
-      :class="['relative size-6', readonly ? '' : 'cursor-pointer']"
+      :class="['relative', readonly ? 'size-7' : 'size-10 cursor-pointer']"
     >
-      <UIcon name="i-lucide-lightbulb" class="size-6 text-stone-200" />
+      <UIcon name="i-lucide-lightbulb" :class="['text-stone-200', readonly ? 'size-7' : 'size-10']" />
       <div
         class="absolute inset-0 overflow-hidden"
         :style="{ width: `${relleno(n) * 100}%` }"
       >
-        <UIcon name="i-lucide-lightbulb" class="size-6 text-amber-400" />
+        <UIcon name="i-lucide-lightbulb" :class="['text-amber-400', readonly ? 'size-7' : 'size-10']" />
       </div>
 
       <template v-if="!readonly">
@@ -38,7 +38,7 @@
       </template>
     </div>
 
-    <span v-if="modelValue !== null" class="text-sm md:text-base text-stone-500 tabular-nums pl-1.5">
+    <span v-if="!readonly && modelValue !== null" class="text-base md:text-lg text-stone-500 tabular-nums pl-1.5">
       {{ etiqueta }}
     </span>
 

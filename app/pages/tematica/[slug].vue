@@ -25,21 +25,26 @@
     <header class="flex flex-col gap-3">
       <span class="text-xs md:text-base text-stone-400">{{ fechaLarga }}</span>
 
-      <h1 class="text-3xl md:text-4xl text-stone-900 font-semibold tracking-tight leading-tight">
-        {{ tematica.tematica }}
-      </h1>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <h1 class="text-2xl iph:text-3xl md:text-4xl mac:text-3xl text-stone-900 font-semibold tracking-tight leading-tight text-balance">
+          {{ tematica.tematica }}
+        </h1>
+        <Lamparitas v-if="tematica.puntaje !== null" :model-value="Number(tematica.puntaje)" readonly />
+      </div>
 
       <div v-if="tematica.desafio" class="max-w-prose flex flex-col gap-1.5 border-l-2 border-amber-200 pl-4">
         <span class="text-xs md:text-sm text-amber-700 font-medium tracking-wide uppercase">Desafío</span>
         <p class="text-base text-stone-700 leading-relaxed whitespace-pre-line">{{ tematica.desafio }}</p>
       </div>
 
+      <IdeaEvaluacion v-if="user" :tematica="tematica" class="max-w-3xl mt-1" />
+
       <div v-if="user" class="flex flex-wrap items-center gap-2 mt-1">
         <IdeaTematicaForm :tematica="tematica" @saved="onSaved" />
         <IdeaTematicaForm :tematica="tematica" modo="calificar" @saved="onSaved" />
         <button
           type="button"
-          class="flex items-center gap-1.5 ml-auto rounded-full text-sm md:text-base text-stone-400 hover:text-red-600 transition-colors px-2 py-1"
+          class="flex items-center gap-1.5 sm:ml-auto rounded-full text-sm md:text-base text-stone-400 hover:text-red-600 transition-colors px-2 py-1"
           @click="onDeleteTematica"
         >
           <UIcon name="i-lucide-trash-2" class="size-4" />
@@ -77,8 +82,6 @@
 
       <IdeaForm v-if="user" :tematica="tematica" @saved="onSaved" />
     </section>
-
-    <IdeaEvaluacion v-if="user" :tematica="tematica" class="max-w-prose" />
   </div>
 </template>
 
